@@ -1,23 +1,27 @@
 pipeline {
     agent any
 
+    environment {
+        PYTHON = 'C:\\Users\\harya\\ML_CICD_Lab\\venv\\Scripts\\python.exe'
+    }
+
     stages {
         stage('Install Dependencies') {
             steps {
-                bat 'python --version'
-                bat 'python -m pip install -r requirements.txt'
+                bat '"%PYTHON%" --version'
+                bat '"%PYTHON%" -m pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
-                bat 'python -m pytest -q'
+                bat '"%PYTHON%" -m pytest -q'
             }
         }
 
         stage('Build') {
             steps {
-                bat 'python -m py_compile app.py'
+                bat '"%PYTHON%" -m py_compile app.py'
             }
         }
 
