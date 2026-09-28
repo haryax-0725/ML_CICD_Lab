@@ -1,63 +1,33 @@
 pipeline {
+    agent any
 
-agent any
+    stages {
+        stage('Install Dependencies') {
+            steps {
+                bat 'python --version'
+                bat 'python -m pip install -r requirements.txt'
+            }
+        }
 
-environment {
+        stage('Run Tests') {
+            steps {
+                bat 'python -m pytest -q'
+            }
+        }
 
-PYTHON = 'C:\Users\harya\AppData\Local\Python\bin\python.exe'
+        stage('Build') {
+            steps {
+                bat 'python -m py_compile app.py'
+            }
+        }
 
-}
-
-stages {
-
-stage('Install Dependencies') {
-
-steps {
-
-bat '"%PYTHON%" --version'
-
-bat '"%PYTHON%" -m pip install -r requirements.txt'
-
-}
-
-}
-
-stage('Run Tests') {
-
-steps {
-
-bat '"%PYTHON%" -m pytest -q'
-
-}
-
-}
-
-stage('Build') {
-
-steps {
-
-bat '"%PYTHON%" -m py_compile app.py'
-
-}
-
-}
-
-stage('Deploy') {
-
-steps {
-
-bat 'if not exist deploy mkdir deploy'
-
-bat 'copy /Y app.py deploy\\app.py'
-
-bat 'copy /Y requirements.txt deploy\\requirements.txt'
-
-echo 'Deployment Successful'
-
-}
-
-}
-
-}
-
+        stage('Deploy') {
+            steps {
+                bat 'if not exist deploy mkdir deploy'
+                bat 'copy /Y app.py deploy\\app.py'
+                bat 'copy /Y requirements.txt deploy\\requirements.txt'
+                echo 'Deployment Successful'
+            }
+        }
+    }
 }
